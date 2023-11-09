@@ -174,19 +174,13 @@ def train(i):
 
 
 
-for i in range(10):
-    train(i+1)
+train(999)
 # 绘制ROC曲线和AP曲线，横坐标为次数，纵坐标为ROC/AP值
-
 # 输出结果的平均值
 print('rocList',finalROC)
 print('apList',finalAP)
 print('rocList mean',np.mean(finalROC))
 print('apList mean',np.mean(finalAP))
-# 将结果保存到json文件中
-import json
-with open('./rec/' + args.get('dataset') + '-' + args.get('model') + '-UseFeature' + '.json','w') as f:
-    json.dump({'rocList':finalROC,'apList':finalAP,'rocList mean':np.mean(finalROC),'apList mean':np.mean(finalAP)},f)
 
 
 
