@@ -22,8 +22,8 @@ def compute_loss_para(adj):
     weight_tensor[weight_mask] = pos_weight
     return weight_tensor, norm
 def get_acc(adj_rec, adj_label):
-    labels_all = adj_label.view(-1).long()
-    preds_all = (adj_rec > 0.5).view(-1).long()
+    labels_all = adj_label.reshape(-1).long()
+    preds_all = (adj_rec > 0.5).reshape(-1).long()
     accuracy = (preds_all == labels_all).sum().float() / labels_all.size(0)
     return accuracy
 def get_scores(edges_pos,edges_neg, adj_rec): #edges_neg
@@ -107,14 +107,23 @@ def train(i):
     adj = []
     rocList = []
     apList = []
-
-    for epoch in tqdm(range(args.get('epoch')), desc='epoch', total=args.get('epoch'),unit_scale=True,unit='times'):
+    X = data.x
+    for epoch in tqdm(range(args.get('epoch')), desc='Epoch', unit='epoch', unit_scale=False):
         t = time.time()
         myModel.train()
         #gaeModel.train()
-        adj , mean, logstd, z = myModel.forward(data.x,data.train_pos_edge_index)
-        # 计算损失
-        loss = norm * F.binary_cross_entropy(input=adj.view(-1),target = adjTrain.view(-1), weight=weight_tensor)
+        adj , mean, logstd, z = myModel.forward(X,edges)
+        # 如果形状不一致，就转换形状
+
+        if adj.shape != adjTrain.shape:
+            #将小的邻接矩阵转换为大的邻接矩阵的形状
+            if adj.shape[0] < adjTrain.shape[0]:
+                adj = adj.reshape(adjTrain.shape[0],adj.shape[1])
+            else:
+                adjTrain = adjTrain.reshape(adj.shape[0],adjTrain.shape[1])
+
+        # 计算损失函数
+        loss = norm * F.binary_cross_entropy(input=adj.reshape(-1),target = adjTrain.reshape(-1), weight=weight_tensor)
         kl_divergence = None
         if args.get('model') == 'VGAE':
             kl_divergence = -0.5 / adj.size(0) * (1 + 2 * logstd - mean.pow(2) - logstd.exp().pow(2)).sum(1).mean()
@@ -127,6 +136,8 @@ def train(i):
         roc_score, ap_score = get_scores(data.test_pos_edge_index,data.test_neg_edge_index, adj)
         rocList.append(roc_score.item())
         apList.append(ap_score.item())
+
+
 
 
 
