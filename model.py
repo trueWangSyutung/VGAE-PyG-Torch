@@ -21,15 +21,13 @@ class VGAE(nn.Module):
         self.mean = self.mean_gcn(hidden,edge_index)
         self.logstd = self.logstd_gcn(hidden,edge_index)
         gaussian_noise = torch.randn(X.size(0), self.latentDim)
-        # 采样
+        # 重采样
         z = self.mean + gaussian_noise * torch.exp(self.logstd)
         return z
-
     def decoder(self,z):
         adjReconstruct = torch.sigmoid(torch.matmul(z,z.t()))
         #解码器点乘还原邻接矩阵A'
         return adjReconstruct
-    
     def forward(self,X,edge_index):
         z = self.encoder(X,edge_index)
         adjReconstruct = self.decoder(z)

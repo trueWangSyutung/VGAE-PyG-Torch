@@ -44,13 +44,8 @@ class MyDataset():
         data.train_mask = data.val_mask = data.test_mask = data.y = None
         data = train_test_split_edges(data)
         self.data = data
-        return data.train_pos_edge_index, data.val_pos_edge_index, data.test_pos_edge_index
-
-    def prosses(self):
-        data = self.data
-
-        sdata = train_test_split_edges(data)
         return data
+
         
         
         
