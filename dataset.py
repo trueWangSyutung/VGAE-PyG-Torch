@@ -49,7 +49,6 @@ class MyDataset():
     def prosses(self):
         data = self.data
 
-        # 分割数据集, 保证测试集和验证集中有正负样本
         sdata = train_test_split_edges(data)
         return data
         

@@ -34,7 +34,5 @@ The Dataset is the Cora Dataset, CiteSeer Dataset and Pubmed Dataset. We used th
 We use the Cora Dataset to train the Model, and use the CiteSeer Dataset and Pubmed Dataset to test the Model to recurrent the Paper's result.
 Accoding the one times training, the Model can get the result as follow:
 
-| Dataset | Cora | CiteSeer | Pubmed |
-| :-----: |:----:|:--------:| :----: |
-|  Paper  | 81.5 |   70.3   |  79.0  |
+
 

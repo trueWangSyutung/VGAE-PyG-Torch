@@ -21,7 +21,7 @@ class VGAE(nn.Module):
         self.mean = self.mean_gcn(hidden,edge_index)
         self.logstd = self.logstd_gcn(hidden,edge_index)
         gaussian_noise = torch.randn(X.size(0), self.latentDim)
-        #标准高斯分布采样，大小是features_size*hidden2_dim
+        # 采样
         z = self.mean + gaussian_noise * torch.exp(self.logstd)
         return z
 
